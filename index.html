@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Strategy 2 - Target Asset Allocation Tracker</title>
+    <title>Smart Investment Strategy 2 - Target Asset Allocation</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,7 +13,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -32,12 +32,6 @@
             margin: 0;
             font-size: 24px;
             font-weight: 600;
-        }
-        
-        .header p {
-            margin: 8px 0 0 0;
-            opacity: 0.9;
-            font-size: 14px;
         }
         
         .content {
@@ -73,23 +67,28 @@
             font-weight: 600;
             color: #495057;
             border-bottom: 2px solid #dee2e6;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         td {
             padding: 10px 8px;
             border-bottom: 1px solid #e9ecef;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         .input-cell {
             background: #fff3cd;
-            border: 1px solid #ffeaa7;
         }
         
         .calculated-cell {
             background: #d4edda;
             color: #155724;
+            font-weight: 500;
+        }
+        
+        .warning-cell {
+            background: #f8d7da;
+            color: #721c24;
             font-weight: 500;
         }
         
@@ -103,107 +102,176 @@
             font-weight: 500;
         }
         
-        input[type="number"] {
+        input[type="text"], input[type="number"] {
             width: 100%;
             padding: 6px;
             border: 1px solid #ced4da;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 13px;
             background: white;
         }
         
-        input[type="number"]:focus {
+        input[type="number"]:focus, input[type="text"]:focus {
             outline: none;
             border-color: #2a5298;
             box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
         }
         
-        .summary-box {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 4px solid #2a5298;
+        .btn {
+            padding: 8px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
         }
         
-        .summary-box h4 {
-            margin: 0 0 10px 0;
-            color: #1e3c72;
+        .btn-add {
+            background: #28a745;
+            color: white;
         }
         
-        .allocation-bar {
-            height: 20px;
-            background: #e9ecef;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 5px 0;
-            position: relative;
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            font-size: 11px;
         }
         
-        .allocation-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #28a745, #20c997);
-            transition: width 0.3s ease;
+        .btn-normalize {
+            background: #ffc107;
+            color: #212529;
         }
         
-        .instructions {
-            background: #e7f3ff;
-            border: 1px solid #b3d7ff;
-            border-radius: 8px;
+        .controls {
+            background: #f8f9fa;
             padding: 15px;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
         
-        .instructions h4 {
-            margin: 0 0 10px 0;
-            color: #0056b3;
+        .alert {
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
         }
         
-        .instructions ol {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
-        }
-        
-        .highlight {
+        .alert-warning {
             background: #fff3cd;
-            padding: 2px 4px;
-            border-radius: 3px;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .alert-info {
+            background: #cce7ff;
+            border-color: #2196F3;
+            color: #0c5460;
+        }
+        
+        .investment-plan {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .investment-plan h4 {
+            margin: 0 0 15px 0;
+            color: #155724;
+            font-size: 18px;
+        }
+        
+        .flex-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #2a5298;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Investment Strategy 2: Target Asset Allocation</h1>
-            <p>Growth-Oriented Approach with Monthly Rebalancing</p>
-        </div>
-        
-        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px;">
-            <h4 style="margin: 0 0 10px 0; color: #856404;">🌐 How to Use This Tool:</h4>
-            <p style="margin: 5px 0;"><strong>Option 1 - Use Online:</strong> Save this page as an HTML file and open in your browser</p>
-            <p style="margin: 5px 0;"><strong>Option 2 - Google Sheets:</strong> Copy the CSV template above into Google Sheets</p>
-            <p style="margin: 5px 0;"><strong>Option 3 - Host Online:</strong> Upload the HTML file to any free hosting service like GitHub Pages, Netlify, or Vercel</p>
+            <h1>🎯 Smart Investment Strategy 2: Target Asset Allocation</h1>
+            <p>Intelligent Rebalancing with Exact Investment Calculations</p>
         </div>
         
         <div class="content">
-            <div class="instructions">
-                <h4>📋 How to Use This Tracker:</h4>
-                <ol>
-                    <li>Enter your current portfolio values in the <span class="highlight">yellow cells</span></li>
-                    <li>Adjust target allocations if needed (currently set to example percentages)</li>
-                    <li>Enter your monthly contribution amount</li>
-                    <li>The green cells will automatically calculate where to invest this month</li>
-                    <li>Invest in underweight assets (negative variance) to rebalance your portfolio</li>
-                </ol>
+            <div class="controls">
+                <div class="flex-row">
+                    <div>
+                        <label><strong>Monthly Contribution: €</strong></label>
+                        <input type="number" id="monthly-contribution" value="1000" min="0" step="1" style="width: 100px;">
+                    </div>
+                    <button class="btn btn-add" onclick="addStock()">➕ Add Stock</button>
+                    <button class="btn btn-normalize" onclick="normalizeAllocations()">🔧 Normalize to 100%</button>
+                </div>
+            </div>
+            
+            <div id="allocation-warning" class="alert alert-warning" style="display: none;">
+                <strong>⚠️ Warning:</strong> Target allocations sum to <span id="total-allocation">0</span>%. Please normalize to 100% or adjust manually.
+            </div>
+            
+            <div class="summary-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="total-portfolio-value">€0</div>
+                    <div class="stat-label">Current Portfolio</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="target-total">0%</div>
+                    <div class="stat-label">Target Sum</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="monthly-contrib-display">€0</div>
+                    <div class="stat-label">Monthly Contribution</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="future-portfolio-value">€0</div>
+                    <div class="stat-label">Portfolio + Contribution</div>
+                </div>
             </div>
             
             <div class="section">
-                <h3>📊 Current Portfolio & Target Allocation</h3>
-                <table id="portfolioTable">
+                <h3>📊 Portfolio Holdings & Target Allocation</h3>
+                <table>
                     <thead>
                         <tr>
                             <th>Asset</th>
@@ -211,309 +279,297 @@
                             <th>Target %</th>
                             <th>Current %</th>
                             <th>Target Value (€)</th>
-                            <th>Variance (€)</th>
+                            <th>Gap to Target (€)</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>VWCE</strong></td>
-                            <td class="input-cell"><input type="number" id="vwce-current" value="2000" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="vwce-target" value="40" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="vwce-current-pct">0%</td>
-                            <td class="calculated-cell" id="vwce-target-value">€0</td>
-                            <td class="calculated-cell" id="vwce-variance">€0</td>
-                            <td class="calculated-cell" id="vwce-status">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>CNDX</strong></td>
-                            <td class="input-cell"><input type="number" id="cndx-current" value="1250" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="cndx-target" value="25" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="cndx-current-pct">0%</td>
-                            <td class="calculated-cell" id="cndx-target-value">€0</td>
-                            <td class="calculated-cell" id="cndx-variance">€0</td>
-                            <td class="calculated-cell" id="cndx-status">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>AMD</strong></td>
-                            <td class="input-cell"><input type="number" id="amd-current" value="300" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="amd-target" value="5" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="amd-current-pct">0%</td>
-                            <td class="calculated-cell" id="amd-target-value">€0</td>
-                            <td class="calculated-cell" id="amd-variance">€0</td>
-                            <td class="calculated-cell" id="amd-status">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>GOOG</strong></td>
-                            <td class="input-cell"><input type="number" id="goog-current" value="250" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="goog-target" value="5" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="goog-current-pct">0%</td>
-                            <td class="calculated-cell" id="goog-target-value">€0</td>
-                            <td class="calculated-cell" id="goog-variance">€0</td>
-                            <td class="calculated-cell" id="goog-status">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>AMZN</strong></td>
-                            <td class="input-cell"><input type="number" id="amzn-current" value="200" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="amzn-target" value="5" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="amzn-current-pct">0%</td>
-                            <td class="calculated-cell" id="amzn-target-value">€0</td>
-                            <td class="calculated-cell" id="amzn-variance">€0</td>
-                            <td class="calculated-cell" id="amzn-status">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>ASML</strong></td>
-                            <td class="input-cell"><input type="number" id="asml-current" value="350" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="asml-target" value="5" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="asml-current-pct">0%</td>
-                            <td class="calculated-cell" id="asml-target-value">€0</td>
-                            <td class="calculated-cell" id="asml-variance">€0</td>
-                            <td class="calculated-cell" id="asml-status">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>BYD</strong></td>
-                            <td class="input-cell"><input type="number" id="byd-current" value="180" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="byd-target" value="5" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="byd-current-pct">0%</td>
-                            <td class="calculated-cell" id="byd-target-value">€0</td>
-                            <td class="calculated-cell" id="byd-variance">€0</td>
-                            <td class="calculated-cell" id="byd-status">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Xiaomi (3CP)</strong></td>
-                            <td class="input-cell"><input type="number" id="xiaomi-current" value="220" min="0" step="0.01"></td>
-                            <td class="input-cell"><input type="number" id="xiaomi-target" value="5" min="0" max="100" step="0.1">%</td>
-                            <td class="calculated-cell" id="xiaomi-current-pct">0%</td>
-                            <td class="calculated-cell" id="xiaomi-target-value">€0</td>
-                            <td class="calculated-cell" id="xiaomi-variance">€0</td>
-                            <td class="calculated-cell" id="xiaomi-status">-</td>
-                        </tr>
+                    <tbody id="portfolio-table">
                     </tbody>
                 </table>
             </div>
             
-            <div class="section">
-                <h3>💰 Monthly Investment Calculator</h3>
-                <table>
-                    <tr>
-                        <td><strong>Monthly Contribution:</strong></td>
-                        <td class="input-cell" style="width: 150px;">
-                            €<input type="number" id="monthly-contribution" value="1000" min="0" step="1" style="width: 80px;">
-                        </td>
-                        <td><strong>Total Portfolio Value:</strong></td>
-                        <td class="calculated-cell" id="total-portfolio">€0</td>
-                    </tr>
-                </table>
-            </div>
-            
-            <div class="summary-box">
-                <h4>🎯 This Month's Investment Plan</h4>
-                <div id="investment-recommendations"></div>
-            </div>
-            
-            <div class="section">
-                <h3>📈 Suggested Monthly Allocations</h3>
-                <table id="allocationTable">
-                    <thead>
-                        <tr>
-                            <th>Asset</th>
-                            <th>Priority</th>
-                            <th>Suggested Investment (€)</th>
-                            <th>Reasoning</th>
-                        </tr>
-                    </thead>
-                    <tbody id="allocation-body">
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="section">
-                <h3>📋 Strategy 2 Guidelines</h3>
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
-                    <p><strong>Target Asset Allocation Strategy:</strong></p>
-                    <ul>
-                        <li><strong>Maintain Target Percentages:</strong> Each month, check which assets are below their target allocation</li>
-                        <li><strong>Buy Underweight Assets:</strong> Invest new money primarily in assets that have fallen below target %</li>
-                        <li><strong>Disciplined Rebalancing:</strong> This forces you to "buy low" by purchasing what has underperformed</li>
-                        <li><strong>Risk Management:</strong> Prevents individual stocks from growing too large relative to your diversified core</li>
-                    </ul>
-                    <p><strong>Monthly Process:</strong> Input current values → Review recommendations → Invest in underweight assets → Update portfolio next month</p>
+            <div class="investment-plan">
+                <h4>💰 Exact Monthly Investment Plan</h4>
+                <div id="investment-recommendations">
+                    <p>Enter your portfolio values to see recommendations...</p>
                 </div>
             </div>
             
-            <div style="text-align: center; margin-top: 30px; padding: 15px; background: #e7f3ff; border-radius: 8px;">
-                <p style="margin: 0; color: #0056b3; font-size: 14px;">
-                    <strong>💡 Pro Tip:</strong> Copy this to Google Sheets for automatic calculations and easier tracking over time
-                </p>
+            <div class="section">
+                <h3>📈 Detailed Investment Breakdown</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Investment Amount (€)</th>
+                            <th>After Investment Value (€)</th>
+                            <th>After Investment %</th>
+                            <th>Remaining Gap (€)</th>
+                            <th>Action Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="breakdown-table">
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="alert alert-info">
+                <h4 style="margin-top: 0;">🧠 How the Smart Algorithm Works:</h4>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>Perfect Rebalancing:</strong> Calculates exact amounts needed to reach target allocation</li>
+                    <li><strong>Overweight Assets:</strong> May receive $0 investment or be flagged for selling</li>
+                    <li><strong>Underweight Assets:</strong> Receive proportional investment to close gaps</li>
+                    <li><strong>Intelligent Distribution:</strong> Spreads monthly contribution optimally across all gaps</li>
+                    <li><strong>Auto-Normalization:</strong> Ensures target percentages always sum to 100%</li>
+                </ul>
             </div>
         </div>
     </div>
 
     <script>
-        const assets = ['vwce', 'cndx', 'amd', 'goog', 'amzn', 'asml', 'byd', 'xiaomi'];
+        let portfolioAssets = [
+            { symbol: 'VWCE', name: 'VWCE', currentValue: 2000, targetPct: 40 },
+            { symbol: 'CNDX', name: 'CNDX', currentValue: 1250, targetPct: 25 },
+            { symbol: 'AMD', name: 'AMD', currentValue: 300, targetPct: 5 },
+            { symbol: 'GOOG', name: 'GOOG', currentValue: 250, targetPct: 5 },
+            { symbol: 'AMZN', name: 'AMZN', currentValue: 200, targetPct: 5 },
+            { symbol: 'ASML', name: 'ASML', currentValue: 350, targetPct: 5 },
+            { symbol: 'BYD', name: 'BYD', currentValue: 180, targetPct: 5 },
+            { symbol: 'XIAOMI', name: 'Xiaomi (3CP)', currentValue: 220, targetPct: 5 }
+        ];
         
-        function calculatePortfolio() {
-            let totalValue = 0;
-            const portfolioData = {};
+        function renderPortfolioTable() {
+            const tableBody = document.getElementById('portfolio-table');
+            tableBody.innerHTML = '';
             
-            // Calculate total portfolio value and gather data
-            assets.forEach(asset => {
-                const currentValue = parseFloat(document.getElementById(`${asset}-current`).value) || 0;
-                const targetPct = parseFloat(document.getElementById(`${asset}-target`).value) || 0;
-                
-                portfolioData[asset] = {
-                    current: currentValue,
-                    targetPct: targetPct
-                };
-                
-                totalValue += currentValue;
+            portfolioAssets.forEach((asset, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="text" value="${asset.name}" onchange="updateAssetName(${index}, this.value)" style="width: 100px;"></td>
+                    <td class="input-cell"><input type="number" value="${asset.currentValue}" min="0" step="0.01" onchange="updateCurrentValue(${index}, this.value)" style="width: 90px;"></td>
+                    <td class="input-cell"><input type="number" value="${asset.targetPct}" min="0" max="100" step="0.1" onchange="updateTargetPct(${index}, this.value)" style="width: 60px;">%</td>
+                    <td class="calculated-cell" id="current-pct-${index}">0%</td>
+                    <td class="calculated-cell" id="target-value-${index}">€0</td>
+                    <td class="calculated-cell" id="gap-${index}">€0</td>
+                    <td class="calculated-cell" id="status-${index}">-</td>
+                    <td><button class="btn btn-remove" onclick="removeAsset(${index})">🗑️</button></td>
+                `;
+                tableBody.appendChild(row);
             });
             
-            // Update total portfolio display
-            document.getElementById('total-portfolio').textContent = `€${totalValue.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            
-            // Calculate current percentages, target values, and variances
+            calculateInvestments();
+        }
+        
+        function addStock() {
+            const newAsset = {
+                symbol: 'NEW',
+                name: 'New Stock',
+                currentValue: 0,
+                targetPct: 5
+            };
+            portfolioAssets.push(newAsset);
+            renderPortfolioTable();
+        }
+        
+        function removeAsset(index) {
+            if (portfolioAssets.length > 1) {
+                portfolioAssets.splice(index, 1);
+                renderPortfolioTable();
+            } else {
+                alert('Cannot remove the last asset. You need at least one asset in your portfolio.');
+            }
+        }
+        
+        function updateAssetName(index, value) {
+            portfolioAssets[index].name = value;
+        }
+        
+        function updateCurrentValue(index, value) {
+            portfolioAssets[index].currentValue = parseFloat(value) || 0;
+            calculateInvestments();
+        }
+        
+        function updateTargetPct(index, value) {
+            portfolioAssets[index].targetPct = parseFloat(value) || 0;
+            calculateInvestments();
+        }
+        
+        function normalizeAllocations() {
+            const totalTarget = portfolioAssets.reduce((sum, asset) => sum + asset.targetPct, 0);
+            if (totalTarget > 0) {
+                portfolioAssets.forEach(asset => {
+                    asset.targetPct = (asset.targetPct / totalTarget) * 100;
+                });
+                renderPortfolioTable();
+            }
+        }
+        
+        function calculateInvestments() {
             const monthlyContribution = parseFloat(document.getElementById('monthly-contribution').value) || 0;
-            const newPortfolioValue = totalValue + monthlyContribution;
+            const totalCurrentValue = portfolioAssets.reduce((sum, asset) => sum + asset.currentValue, 0);
+            const totalTargetPct = portfolioAssets.reduce((sum, asset) => sum + asset.targetPct, 0);
+            const futurePortfolioValue = totalCurrentValue + monthlyContribution;
             
-            assets.forEach(asset => {
-                const data = portfolioData[asset];
-                const currentPct = totalValue > 0 ? (data.current / totalValue * 100) : 0;
-                const targetValue = newPortfolioValue * (data.targetPct / 100);
-                const variance = data.current - (totalValue * (data.targetPct / 100));
+            // Update summary stats
+            document.getElementById('total-portfolio-value').textContent = `€${totalCurrentValue.toLocaleString('de-DE', {maximumFractionDigits: 0})}`;
+            document.getElementById('target-total').textContent = `${totalTargetPct.toFixed(1)}%`;
+            document.getElementById('monthly-contrib-display').textContent = `€${monthlyContribution.toLocaleString('de-DE')}`;
+            document.getElementById('future-portfolio-value').textContent = `€${futurePortfolioValue.toLocaleString('de-DE', {maximumFractionDigits: 0})}`;
+            
+            // Show warning if targets don't sum to 100%
+            const warningDiv = document.getElementById('allocation-warning');
+            if (Math.abs(totalTargetPct - 100) > 0.1) {
+                warningDiv.style.display = 'block';
+                document.getElementById('total-allocation').textContent = totalTargetPct.toFixed(1);
+            } else {
+                warningDiv.style.display = 'none';
+            }
+            
+            // Calculate gaps and investment needs
+            const investmentPlan = [];
+            let totalGap = 0;
+            let totalUnderweight = 0;
+            
+            portfolioAssets.forEach((asset, index) => {
+                const currentPct = totalCurrentValue > 0 ? (asset.currentValue / totalCurrentValue * 100) : 0;
+                const targetValue = futurePortfolioValue * (asset.targetPct / 100);
+                const gap = targetValue - asset.currentValue;
                 
-                // Update display
-                document.getElementById(`${asset}-current-pct`).textContent = `${currentPct.toFixed(1)}%`;
-                document.getElementById(`${asset}-target-value`).textContent = `€${targetValue.toLocaleString('de-DE', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+                // Update table cells
+                document.getElementById(`current-pct-${index}`).textContent = `${currentPct.toFixed(1)}%`;
+                document.getElementById(`target-value-${index}`).textContent = `€${targetValue.toLocaleString('de-DE', {maximumFractionDigits: 0})}`;
                 
-                const varianceCell = document.getElementById(`${asset}-variance`);
-                varianceCell.textContent = `€${variance.toLocaleString('de-DE', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
-                varianceCell.className = variance < 0 ? 'calculated-cell negative' : 'calculated-cell positive';
+                const gapCell = document.getElementById(`gap-${index}`);
+                gapCell.textContent = `€${gap.toLocaleString('de-DE', {maximumFractionDigits: 0})}`;
+                gapCell.className = gap < 0 ? 'calculated-cell negative' : 'calculated-cell positive';
                 
-                // Status
-                const statusCell = document.getElementById(`${asset}-status`);
-                const pctDiff = currentPct - data.targetPct;
-                if (Math.abs(pctDiff) < 0.5) {
+                const statusCell = document.getElementById(`status-${index}`);
+                if (Math.abs(gap) < 50) {
                     statusCell.textContent = '✅ On Target';
                     statusCell.className = 'calculated-cell';
-                } else if (pctDiff < 0) {
+                } else if (gap > 0) {
                     statusCell.textContent = '📉 Underweight';
                     statusCell.className = 'calculated-cell negative';
+                    totalUnderweight += gap;
                 } else {
                     statusCell.textContent = '📈 Overweight';
                     statusCell.className = 'calculated-cell positive';
                 }
                 
-                portfolioData[asset].currentPct = currentPct;
-                portfolioData[asset].targetValue = targetValue;
-                portfolioData[asset].variance = variance;
-                portfolioData[asset].needsInvestment = data.current < targetValue;
-            });
-            
-            generateInvestmentRecommendations(portfolioData, monthlyContribution, newPortfolioValue);
-        }
-        
-        function generateInvestmentRecommendations(portfolioData, monthlyContribution, newPortfolioValue) {
-            // Calculate investment priorities
-            const recommendations = [];
-            
-            assets.forEach(asset => {
-                const data = portfolioData[asset];
-                const shortfall = (newPortfolioValue * (data.targetPct / 100)) - data.current;
+                investmentPlan.push({
+                    ...asset,
+                    index,
+                    currentPct,
+                    targetValue,
+                    gap,
+                    investmentAmount: 0
+                });
                 
-                if (shortfall > 0) {
-                    recommendations.push({
-                        asset: asset.toUpperCase(),
-                        shortfall: shortfall,
-                        priority: shortfall / (newPortfolioValue * (data.targetPct / 100)) * 100,
-                        targetPct: data.targetPct
-                    });
-                }
+                totalGap += gap;
             });
             
-            // Sort by priority (largest shortfall percentage first)
-            recommendations.sort((a, b) => b.priority - a.priority);
-            
-            // Allocate monthly contribution
+            // Smart investment distribution
             let remainingContribution = monthlyContribution;
-            const allocations = [];
             
-            recommendations.forEach((rec, index) => {
-                if (remainingContribution > 0) {
-                    const allocation = Math.min(remainingContribution, rec.shortfall);
-                    if (allocation > 0) {
-                        allocations.push({
-                            asset: rec.asset,
-                            amount: allocation,
-                            priority: index + 1,
-                            reasoning: allocation >= rec.shortfall ? 
-                                `Fully rebalance to target ${rec.targetPct}%` : 
-                                `Partial rebalancing (${rec.priority.toFixed(1)}% underweight)`
-                        });
-                        remainingContribution -= allocation;
-                    }
-                }
-            });
-            
-            // If money left over, allocate proportionally to targets
-            if (remainingContribution > 0 && allocations.length > 0) {
-                const totalTargetPct = allocations.reduce((sum, alloc) => {
-                    const assetLower = alloc.asset.toLowerCase();
-                    return sum + portfolioData[assetLower].targetPct;
-                }, 0);
-                
-                allocations.forEach(alloc => {
-                    const assetLower = alloc.asset.toLowerCase();
-                    const proportionalAmount = remainingContribution * (portfolioData[assetLower].targetPct / totalTargetPct);
-                    alloc.amount += proportionalAmount;
-                    if (proportionalAmount > 0) {
-                        alloc.reasoning += ` + €${proportionalAmount.toFixed(0)} proportional`;
+            // First, invest in underweight assets proportionally
+            if (totalUnderweight > 0) {
+                investmentPlan.forEach(asset => {
+                    if (asset.gap > 0) {
+                        const proportionalInvestment = Math.min(
+                            remainingContribution * (asset.gap / totalUnderweight),
+                            asset.gap
+                        );
+                        asset.investmentAmount = proportionalInvestment;
+                        remainingContribution -= proportionalInvestment;
                     }
                 });
             }
             
-            // Update recommendations display
-            const recommendationsDiv = document.getElementById('investment-recommendations');
-            if (allocations.length === 0) {
-                recommendationsDiv.innerHTML = '<p style="margin: 0;">✅ Portfolio is perfectly balanced! Consider proportional investment across all holdings.</p>';
-            } else {
-                let html = '<p style="margin: 0 0 10px 0;"><strong>Invest your €' + monthlyContribution.toLocaleString('de-DE') + ' as follows:</strong></p>';
-                allocations.forEach(alloc => {
-                    html += `<div style="margin: 5px 0;">• <strong>${alloc.asset}:</strong> €${alloc.amount.toFixed(0)} <span style="color: #666; font-size: 13px;">(${alloc.reasoning})</span></div>`;
-                });
-                recommendationsDiv.innerHTML = html;
-            }
-            
-            // Update allocation table
-            const allocationBody = document.getElementById('allocation-body');
-            allocationBody.innerHTML = '';
-            
-            if (allocations.length === 0) {
-                allocationBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #666;">Portfolio is well-balanced. Consider proportional investment across all assets.</td></tr>';
-            } else {
-                allocations.forEach(alloc => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><strong>${alloc.asset}</strong></td>
-                        <td>${alloc.priority}</td>
-                        <td><strong>€${alloc.amount.toFixed(0)}</strong></td>
-                        <td>${alloc.reasoning}</td>
-                    `;
-                    allocationBody.appendChild(row);
+            // If money remains, distribute proportionally among all assets based on target allocation
+            if (remainingContribution > 1) {
+                investmentPlan.forEach(asset => {
+                    const proportionalAmount = remainingContribution * (asset.targetPct / 100);
+                    asset.investmentAmount += proportionalAmount;
                 });
             }
+            
+            // Generate recommendations
+            generateRecommendations(investmentPlan, monthlyContribution);
+            generateBreakdown(investmentPlan, futurePortfolioValue);
         }
         
-        // Add event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add listeners to all input fields
-            const inputs = document.querySelectorAll('input[type="number"]');
-            inputs.forEach(input => {
-                input.addEventListener('input', calculatePortfolio);
-            });
+        function generateRecommendations(investmentPlan, monthlyContribution) {
+            const recommendationsDiv = document.getElementById('investment-recommendations');
             
-            // Initial calculation
-            calculatePortfolio();
+            let html = `<p style="margin: 0 0 15px 0;"><strong>💡 This month, invest your €${monthlyContribution.toLocaleString('de-DE')} as follows:</strong></p>`;
+            
+            const nonZeroInvestments = investmentPlan.filter(asset => asset.investmentAmount > 1);
+            
+            if (nonZeroInvestments.length === 0) {
+                html += '<div style="text-align: center; color: #666; padding: 20px;">✅ Portfolio is perfectly balanced! No investments needed.</div>';
+            } else {
+                html += '<div style="display: grid; gap: 10px;">';
+                nonZeroInvestments.forEach(asset => {
+                    const percentage = (asset.investmentAmount / monthlyContribution * 100).toFixed(1);
+                    html += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 6px; border-left: 4px solid #28a745;">
+                            <div>
+                                <strong>${asset.name}</strong>
+                                <span style="color: #666; font-size: 12px; margin-left: 10px;">${percentage}% of contribution</span>
+                            </div>
+                            <div style="font-size: 18px; font-weight: bold; color: #28a745;">
+                                €${asset.investmentAmount.toFixed(0)}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                const totalInvested = nonZeroInvestments.reduce((sum, asset) => sum + asset.investmentAmount, 0);
+                if (Math.abs(totalInvested - monthlyContribution) > 1) {
+                    html += `<p style="margin-top: 15px; color: #dc3545; font-size: 12px;"><strong>Note:</strong> Total allocated: €${totalInvested.toFixed(0)} of €${monthlyContribution}</p>`;
+                }
+            }
+            
+            recommendationsDiv.innerHTML = html;
+        }
+        
+        function generateBreakdown(investmentPlan, futurePortfolioValue) {
+            const breakdownBody = document.getElementById('breakdown-table');
+            breakdownBody.innerHTML = '';
+            
+            investmentPlan.forEach(asset => {
+                const afterValue = asset.currentValue + asset.investmentAmount;
+                const afterPct = (afterValue / futurePortfolioValue * 100);
+                const remainingGap = (futurePortfolioValue * (asset.targetPct / 100)) - afterValue;
+                
+                let actionType = 'Hold';
+                if (asset.investmentAmount > 1) {
+                    actionType = 'Buy';
+                } else if (asset.gap < -100) {
+                    actionType = 'Consider Selling';
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${asset.name}</strong></td>
+                    <td>${asset.investmentAmount > 1 ? '€' + asset.investmentAmount.toFixed(0) : '€0'}</td>
+                    <td>€${afterValue.toLocaleString('de-DE', {maximumFractionDigits: 0})}</td>
+                    <td>${afterPct.toFixed(1)}% <span style="color: #666; font-size: 11px;">(target: ${asset.targetPct.toFixed(1)}%)</span></td>
+                    <td class="${remainingGap < 0 ? 'negative' : 'positive'}">€${remainingGap.toLocaleString('de-DE', {maximumFractionDigits: 0})}</td>
+                    <td><span style="padding: 2px 6px; border-radius: 3px; font-size: 11px; background: ${actionType === 'Buy' ? '#d4edda' : actionType === 'Consider Selling' ? '#f8d7da' : '#f8f9fa'};">${actionType}</span></td>
+                `;
+                breakdownBody.appendChild(row);
+            });
+        }
+        
+        // Event listeners
+        document.getElementById('monthly-contribution').addEventListener('input', calculateInvestments);
+        
+        // Initial render
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPortfolioTable();
         });
     </script>
 </body>
