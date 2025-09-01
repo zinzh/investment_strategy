@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Strategy 2 - Target Asset Allocation Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 8px 0 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h3 {
+            margin: 0 0 15px 0;
+            color: #1e3c72;
+            font-size: 18px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: #f8f9fa;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 14px;
+        }
+        
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+        
+        .input-cell {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .calculated-cell {
+            background: #d4edda;
+            color: #155724;
+            font-weight: 500;
+        }
+        
+        .negative {
+            color: #dc3545;
+            font-weight: 500;
+        }
+        
+        .positive {
+            color: #28a745;
+            font-weight: 500;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #2a5298;
+        }
+        
+        .summary-box h4 {
+            margin: 0 0 10px 0;
+            color: #1e3c72;
+        }
+        
+        .allocation-bar {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+            position: relative;
+        }
+        
+        .allocation-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h4 {
+            margin: 0 0 10px 0;
+            color: #0056b3;
+        }
+        
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Investment Strategy 2: Target Asset Allocation</h1>
+            <p>Growth-Oriented Approach with Monthly Rebalancing</p>
+        </div>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px;">
+            <h4 style="margin: 0 0 10px 0; color: #856404;">🌐 How to Use This Tool:</h4>
+            <p style="margin: 5px 0;"><strong>Option 1 - Use Online:</strong> Save this page as an HTML file and open in your browser</p>
+            <p style="margin: 5px 0;"><strong>Option 2 - Google Sheets:</strong> Copy the CSV template above into Google Sheets</p>
+            <p style="margin: 5px 0;"><strong>Option 3 - Host Online:</strong> Upload the HTML file to any free hosting service like GitHub Pages, Netlify, or Vercel</p>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h4>📋 How to Use This Tracker:</h4>
+                <ol>
+                    <li>Enter your current portfolio values in the <span class="highlight">yellow cells</span></li>
+                    <li>Adjust target allocations if needed (currently set to example percentages)</li>
+                    <li>Enter your monthly contribution amount</li>
+                    <li>The green cells will automatically calculate where to invest this month</li>
+                    <li>Invest in underweight assets (negative variance) to rebalance your portfolio</li>
+                </ol>
+            </div>
+            
+            <div class="section">
+                <h3>📊 Current Portfolio & Target Allocation</h3>
+                <table id="portfolioTable">
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Current Value (€)</th>
+                            <th>Target %</th>
+                            <th>Current %</th>
+                            <th>Target Value (€)</th>
+                            <th>Variance (€)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>VWCE</strong></td>
+                            <td class="input-cell"><input type="number" id="vwce-current" value="2000" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="vwce-target" value="40" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="vwce-current-pct">0%</td>
+                            <td class="calculated-cell" id="vwce-target-value">€0</td>
+                            <td class="calculated-cell" id="vwce-variance">€0</td>
+                            <td class="calculated-cell" id="vwce-status">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CNDX</strong></td>
+                            <td class="input-cell"><input type="number" id="cndx-current" value="1250" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="cndx-target" value="25" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="cndx-current-pct">0%</td>
+                            <td class="calculated-cell" id="cndx-target-value">€0</td>
+                            <td class="calculated-cell" id="cndx-variance">€0</td>
+                            <td class="calculated-cell" id="cndx-status">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMD</strong></td>
+                            <td class="input-cell"><input type="number" id="amd-current" value="300" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="amd-target" value="5" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="amd-current-pct">0%</td>
+                            <td class="calculated-cell" id="amd-target-value">€0</td>
+                            <td class="calculated-cell" id="amd-variance">€0</td>
+                            <td class="calculated-cell" id="amd-status">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GOOG</strong></td>
+                            <td class="input-cell"><input type="number" id="goog-current" value="250" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="goog-target" value="5" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="goog-current-pct">0%</td>
+                            <td class="calculated-cell" id="goog-target-value">€0</td>
+                            <td class="calculated-cell" id="goog-variance">€0</td>
+                            <td class="calculated-cell" id="goog-status">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMZN</strong></td>
+                            <td class="input-cell"><input type="number" id="amzn-current" value="200" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="amzn-target" value="5" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="amzn-current-pct">0%</td>
+                            <td class="calculated-cell" id="amzn-target-value">€0</td>
+                            <td class="calculated-cell" id="amzn-variance">€0</td>
+                            <td class="calculated-cell" id="amzn-status">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ASML</strong></td>
+                            <td class="input-cell"><input type="number" id="asml-current" value="350" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="asml-target" value="5" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="asml-current-pct">0%</td>
+                            <td class="calculated-cell" id="asml-target-value">€0</td>
+                            <td class="calculated-cell" id="asml-variance">€0</td>
+                            <td class="calculated-cell" id="asml-status">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BYD</strong></td>
+                            <td class="input-cell"><input type="number" id="byd-current" value="180" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="byd-target" value="5" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="byd-current-pct">0%</td>
+                            <td class="calculated-cell" id="byd-target-value">€0</td>
+                            <td class="calculated-cell" id="byd-variance">€0</td>
+                            <td class="calculated-cell" id="byd-status">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Xiaomi (3CP)</strong></td>
+                            <td class="input-cell"><input type="number" id="xiaomi-current" value="220" min="0" step="0.01"></td>
+                            <td class="input-cell"><input type="number" id="xiaomi-target" value="5" min="0" max="100" step="0.1">%</td>
+                            <td class="calculated-cell" id="xiaomi-current-pct">0%</td>
+                            <td class="calculated-cell" id="xiaomi-target-value">€0</td>
+                            <td class="calculated-cell" id="xiaomi-variance">€0</td>
+                            <td class="calculated-cell" id="xiaomi-status">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h3>💰 Monthly Investment Calculator</h3>
+                <table>
+                    <tr>
+                        <td><strong>Monthly Contribution:</strong></td>
+                        <td class="input-cell" style="width: 150px;">
+                            €<input type="number" id="monthly-contribution" value="1000" min="0" step="1" style="width: 80px;">
+                        </td>
+                        <td><strong>Total Portfolio Value:</strong></td>
+                        <td class="calculated-cell" id="total-portfolio">€0</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="summary-box">
+                <h4>🎯 This Month's Investment Plan</h4>
+                <div id="investment-recommendations"></div>
+            </div>
+            
+            <div class="section">
+                <h3>📈 Suggested Monthly Allocations</h3>
+                <table id="allocationTable">
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Priority</th>
+                            <th>Suggested Investment (€)</th>
+                            <th>Reasoning</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allocation-body">
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h3>📋 Strategy 2 Guidelines</h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                    <p><strong>Target Asset Allocation Strategy:</strong></p>
+                    <ul>
+                        <li><strong>Maintain Target Percentages:</strong> Each month, check which assets are below their target allocation</li>
+                        <li><strong>Buy Underweight Assets:</strong> Invest new money primarily in assets that have fallen below target %</li>
+                        <li><strong>Disciplined Rebalancing:</strong> This forces you to "buy low" by purchasing what has underperformed</li>
+                        <li><strong>Risk Management:</strong> Prevents individual stocks from growing too large relative to your diversified core</li>
+                    </ul>
+                    <p><strong>Monthly Process:</strong> Input current values → Review recommendations → Invest in underweight assets → Update portfolio next month</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding: 15px; background: #e7f3ff; border-radius: 8px;">
+                <p style="margin: 0; color: #0056b3; font-size: 14px;">
+                    <strong>💡 Pro Tip:</strong> Copy this to Google Sheets for automatic calculations and easier tracking over time
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const assets = ['vwce', 'cndx', 'amd', 'goog', 'amzn', 'asml', 'byd', 'xiaomi'];
+        
+        function calculatePortfolio() {
+            let totalValue = 0;
+            const portfolioData = {};
+            
+            // Calculate total portfolio value and gather data
+            assets.forEach(asset => {
+                const currentValue = parseFloat(document.getElementById(`${asset}-current`).value) || 0;
+                const targetPct = parseFloat(document.getElementById(`${asset}-target`).value) || 0;
+                
+                portfolioData[asset] = {
+                    current: currentValue,
+                    targetPct: targetPct
+                };
+                
+                totalValue += currentValue;
+            });
+            
+            // Update total portfolio display
+            document.getElementById('total-portfolio').textContent = `€${totalValue.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            // Calculate current percentages, target values, and variances
+            const monthlyContribution = parseFloat(document.getElementById('monthly-contribution').value) || 0;
+            const newPortfolioValue = totalValue + monthlyContribution;
+            
+            assets.forEach(asset => {
+                const data = portfolioData[asset];
+                const currentPct = totalValue > 0 ? (data.current / totalValue * 100) : 0;
+                const targetValue = newPortfolioValue * (data.targetPct / 100);
+                const variance = data.current - (totalValue * (data.targetPct / 100));
+                
+                // Update display
+                document.getElementById(`${asset}-current-pct`).textContent = `${currentPct.toFixed(1)}%`;
+                document.getElementById(`${asset}-target-value`).textContent = `€${targetValue.toLocaleString('de-DE', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+                
+                const varianceCell = document.getElementById(`${asset}-variance`);
+                varianceCell.textContent = `€${variance.toLocaleString('de-DE', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+                varianceCell.className = variance < 0 ? 'calculated-cell negative' : 'calculated-cell positive';
+                
+                // Status
+                const statusCell = document.getElementById(`${asset}-status`);
+                const pctDiff = currentPct - data.targetPct;
+                if (Math.abs(pctDiff) < 0.5) {
+                    statusCell.textContent = '✅ On Target';
+                    statusCell.className = 'calculated-cell';
+                } else if (pctDiff < 0) {
+                    statusCell.textContent = '📉 Underweight';
+                    statusCell.className = 'calculated-cell negative';
+                } else {
+                    statusCell.textContent = '📈 Overweight';
+                    statusCell.className = 'calculated-cell positive';
+                }
+                
+                portfolioData[asset].currentPct = currentPct;
+                portfolioData[asset].targetValue = targetValue;
+                portfolioData[asset].variance = variance;
+                portfolioData[asset].needsInvestment = data.current < targetValue;
+            });
+            
+            generateInvestmentRecommendations(portfolioData, monthlyContribution, newPortfolioValue);
+        }
+        
+        function generateInvestmentRecommendations(portfolioData, monthlyContribution, newPortfolioValue) {
+            // Calculate investment priorities
+            const recommendations = [];
+            
+            assets.forEach(asset => {
+                const data = portfolioData[asset];
+                const shortfall = (newPortfolioValue * (data.targetPct / 100)) - data.current;
+                
+                if (shortfall > 0) {
+                    recommendations.push({
+                        asset: asset.toUpperCase(),
+                        shortfall: shortfall,
+                        priority: shortfall / (newPortfolioValue * (data.targetPct / 100)) * 100,
+                        targetPct: data.targetPct
+                    });
+                }
+            });
+            
+            // Sort by priority (largest shortfall percentage first)
+            recommendations.sort((a, b) => b.priority - a.priority);
+            
+            // Allocate monthly contribution
+            let remainingContribution = monthlyContribution;
+            const allocations = [];
+            
+            recommendations.forEach((rec, index) => {
+                if (remainingContribution > 0) {
+                    const allocation = Math.min(remainingContribution, rec.shortfall);
+                    if (allocation > 0) {
+                        allocations.push({
+                            asset: rec.asset,
+                            amount: allocation,
+                            priority: index + 1,
+                            reasoning: allocation >= rec.shortfall ? 
+                                `Fully rebalance to target ${rec.targetPct}%` : 
+                                `Partial rebalancing (${rec.priority.toFixed(1)}% underweight)`
+                        });
+                        remainingContribution -= allocation;
+                    }
+                }
+            });
+            
+            // If money left over, allocate proportionally to targets
+            if (remainingContribution > 0 && allocations.length > 0) {
+                const totalTargetPct = allocations.reduce((sum, alloc) => {
+                    const assetLower = alloc.asset.toLowerCase();
+                    return sum + portfolioData[assetLower].targetPct;
+                }, 0);
+                
+                allocations.forEach(alloc => {
+                    const assetLower = alloc.asset.toLowerCase();
+                    const proportionalAmount = remainingContribution * (portfolioData[assetLower].targetPct / totalTargetPct);
+                    alloc.amount += proportionalAmount;
+                    if (proportionalAmount > 0) {
+                        alloc.reasoning += ` + €${proportionalAmount.toFixed(0)} proportional`;
+                    }
+                });
+            }
+            
+            // Update recommendations display
+            const recommendationsDiv = document.getElementById('investment-recommendations');
+            if (allocations.length === 0) {
+                recommendationsDiv.innerHTML = '<p style="margin: 0;">✅ Portfolio is perfectly balanced! Consider proportional investment across all holdings.</p>';
+            } else {
+                let html = '<p style="margin: 0 0 10px 0;"><strong>Invest your €' + monthlyContribution.toLocaleString('de-DE') + ' as follows:</strong></p>';
+                allocations.forEach(alloc => {
+                    html += `<div style="margin: 5px 0;">• <strong>${alloc.asset}:</strong> €${alloc.amount.toFixed(0)} <span style="color: #666; font-size: 13px;">(${alloc.reasoning})</span></div>`;
+                });
+                recommendationsDiv.innerHTML = html;
+            }
+            
+            // Update allocation table
+            const allocationBody = document.getElementById('allocation-body');
+            allocationBody.innerHTML = '';
+            
+            if (allocations.length === 0) {
+                allocationBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #666;">Portfolio is well-balanced. Consider proportional investment across all assets.</td></tr>';
+            } else {
+                allocations.forEach(alloc => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${alloc.asset}</strong></td>
+                        <td>${alloc.priority}</td>
+                        <td><strong>€${alloc.amount.toFixed(0)}</strong></td>
+                        <td>${alloc.reasoning}</td>
+                    `;
+                    allocationBody.appendChild(row);
+                });
+            }
+        }
+        
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add listeners to all input fields
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', calculatePortfolio);
+            });
+            
+            // Initial calculation
+            calculatePortfolio();
+        });
+    </script>
+</body>
+</html>
